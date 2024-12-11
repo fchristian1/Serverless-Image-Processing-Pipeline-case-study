@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Image Resizer</title>
+</head>
+<body>
+    <h1>Willkommen bei Azure Image Resizer</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" />
+        <button type="button" onclick="uploadFile()">Bild hochladen</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Bitte eine Datei auswählen!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("<UPLOAD-API-ENDPOINT>", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById("result").innerHTML = `
+                    <p>Bild erfolgreich hochgeladen. <a href="${result.resizedImageUrl}" target="_blank">Geändertes Bild herunterladen</a></p>
+                `;
+            } catch (err) {
+                console.error(err);
+                alert("Fehler beim Hochladen des Bildes.");
+            }
+        }
+    </script>
+</body>
+</html>

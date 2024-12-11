@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Image View and Upload</title>
+    </head>
+    <body class="flex flex-col gap-2 p-2">
+        <div class="border border-black rounded p-2">
+            <h3>Uplaod</h3>
+            <input type="file" id="fileInput" />
+            <button id="uploadButton">Hochladen</button>
+            <p id="status"></p>
+
+            <script>
+                const sasToken =
+                    "sp=racw&st=2024-12-11T11:05:18Z&se=2024-12-11T19:05:18Z&sv=2022-11-02&sr=c&sig=dJe%2BHNPxuMpwPEZof0i%2Bo2P5UaiYGTjQHA8NBtG7uXM%3D";
+
+                const storageUrl = "https://uploadfromhtml.blob.core.windows.net/upload"; // Beispiel: https://<account>.blob.core.windows.net/<container>
+
+                document.getElementById("uploadButton").addEventListener("click", async () => {
+                    const fileInput = document.getElementById("fileInput");
+                    const file = fileInput.files[0];
+
+                    if (!file) {
+                        alert("Bitte wählen Sie eine Datei aus.");
+                        return;
+                    }
+                    const timestamp = Date.now();
+                    const blobUrl = `${storageUrl}/${timestamp + file.name}?${sasToken}`;
+                    const response = await fetch(blobUrl, {
+                        method: "PUT",
+                        headers: {
+                            "x-ms-blob-type": "BlockBlob",
+                        },
+                        body: file,
+                    });
+
+                    if (response.ok) {
+                        document.getElementById("status").textContent = "Hochladen erfolgreich!";
+                    } else {
+                        document.getElementById("status").textContent = "Fehler beim Hochladen.";
+                    }
+                });
+            </script>
+        </div>
+        <div class="border border-black rounded p-2">
+            <h3>View</h3>
+        </div>
+    </body>
+</html>

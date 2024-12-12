@@ -2,7 +2,7 @@
 if [ -f .env ]; then
     source .env
 fi
-LOCATION="westeurope" # Beispiel: westeurope
+LOCATION="germanywestcentral"
 FUNCTION_APP_NAME=$STORAGE_ACCOUNT_NAME"funktion"
 
 # 1. Azure Function App erstellen

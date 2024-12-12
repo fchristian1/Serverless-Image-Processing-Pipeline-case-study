@@ -9,8 +9,8 @@
 
     <body class="flex flex-col gap-2 p-2">
         <div class="border border-black rounded p-2">
-            <h3>Uplaod</h3>
-            <input class="" type="file" id="fileInput" />
+            <h3>Upload</h3>
+            <input class="" type="file" id="fileInput" multiple />
             <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded inline-flex items-center" id="uploadButton">
                 Hochladen
             </button>
@@ -62,7 +62,6 @@
                 const img = document.createElement("img");
                 img.alt = blobName;
                 img.src = `${listUrl200}/${blobName}?${sasToken}`;
-                img.width = 200;
                 img.data;
                 img.setAttribute("data-large-src", `${listUrl1024}/${blobName.replace("images-resize-200/", "images-resize-1024/")}?${sasToken}`);
                 img.addEventListener("click", () => {
@@ -81,26 +80,81 @@
                 const modal = document.getElementById("image-modal");
                 modal.classList.add("hidden");
             });
+            const spinnerChars = ["|", "/", "-", "\\"];
+            let spinnerIndex = 0;
+            let spinnerInterval = null;
+
+            function startSpinner() {
+                const statusEl = document.getElementById("status");
+                spinnerInterval = setInterval(() => {
+                    spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
+                    // Der eigentliche Status-Text wird außerhalb aktualisiert,
+                    // hier aktualisieren wir nur den Spinner.
+                    const currentText = statusEl.textContent;
+                    // Wir suchen den letzten Index des Spinners im Text und ersetzen ihn.
+                    // Wenn Sie den Spinner separat halten wollen, trennen Sie bitte Status und Spinner-Anzeige.
+                    // Hier vereinfachen wir: Der gesamte Text wird jedes Mal neu gesetzt.
+                    if (currentText.includes("...")) {
+                        const parts = currentText.split("...");
+                        statusEl.textContent = parts[0] + "... " + spinnerChars[spinnerIndex];
+                    } else {
+                        // Falls kein ... gefunden wird, fügen wir es hinzu.
+                        statusEl.textContent = currentText + " ... " + spinnerChars[spinnerIndex];
+                    }
+                }, 200);
+            }
+
+            function stopSpinner() {
+                if (spinnerInterval) {
+                    clearInterval(spinnerInterval);
+                    spinnerInterval = null;
+                    spinnerIndex = 0;
+                }
+            }
+
             document.getElementById("uploadButton").addEventListener("click", async () => {
                 const fileInput = document.getElementById("fileInput");
-                const file = fileInput.files[0];
+                const files = fileInput.files;
 
-                if (!file) {
-                    alert("Bitte wählen Sie eine Datei aus.");
+                if (!files || files.length === 0) {
+                    alert("Bitte wählen Sie mindestens eine Datei aus.");
                     return;
                 }
-                const timestamp = Date.now();
-                const blobUrl = `${storageUrl}/${timestamp}_${file.name}?${sasToken}`;
-                const response = await fetch(blobUrl, {
-                    method: "PUT",
-                    headers: {
-                        "x-ms-blob-type": "BlockBlob",
-                    },
-                    body: file,
-                });
 
-                if (response.ok) {
-                    document.getElementById("status").textContent = "Hochladen erfolgreich!";
+                document.getElementById("status").textContent = `Starte Upload von ${files.length} Datei(en)`;
+                startSpinner();
+
+                let allOk = true;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    document.getElementById("status").textContent = `Lade Datei ${i + 1} von ${files.length} hoch...`;
+
+                    const timestamp = Date.now();
+                    const blobUrl = `${storageUrl}/${timestamp}_${file.name}?${sasToken}`;
+
+                    try {
+                        const response = await fetch(blobUrl, {
+                            method: "PUT",
+                            headers: {
+                                "x-ms-blob-type": "BlockBlob",
+                            },
+                            body: file,
+                        });
+
+                        if (!response.ok) {
+                            allOk = false;
+                            break;
+                        }
+                    } catch (error) {
+                        console.error("Fehler beim Upload:", error);
+                        allOk = false;
+                        break;
+                    }
+                }
+
+                stopSpinner();
+                if (allOk) {
+                    document.getElementById("status").textContent = "Alle Dateien wurden erfolgreich hochgeladen!";
                     update = true;
                     const interval = setInterval(async () => {
                         await getBlops();
@@ -112,9 +166,8 @@
                     setTimeout(() => {
                         document.getElementById("status").textContent = "";
                     }, 3000);
-                    //check if new blobs are available
                 } else {
-                    document.getElementById("status").textContent = "Fehler beim Hochladen.";
+                    document.getElementById("status").textContent = "Fehler beim Hochladen einer oder mehrerer Dateien.";
                 }
             });
         </script>

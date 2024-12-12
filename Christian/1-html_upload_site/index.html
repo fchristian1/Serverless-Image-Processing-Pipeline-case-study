@@ -18,6 +18,11 @@
         </div>
         <div class="border border-black rounded p-2">
             <h3>View</h3>
+            <div class="fixed top-4 right-4">
+                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded inline-flex items-center" onclick="getBlops()">
+                    Load new files
+                </button>
+            </div>
             <div id="images" class="flex flex-wrap gap-2"></div>
         </div>
         <div id="image-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
@@ -63,6 +68,7 @@
                 img.alt = blobName;
                 img.src = `${listUrl200}/${blobName}?${sasToken}`;
                 img.data;
+                img.classList.add("object-contain");
                 img.setAttribute("data-large-src", `${listUrl1024}/${blobName.replace("images-resize-200/", "images-resize-1024/")}?${sasToken}`);
                 img.addEventListener("click", () => {
                     const modalImage = document.getElementById("modal-image");

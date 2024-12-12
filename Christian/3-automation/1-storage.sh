@@ -4,7 +4,7 @@
 if [ -f .env ]; then
     source .env
 fi
-LOCATION="westeurope"
+LOCATION="germanywestcentral"
 CONTAINER_NAME="images"
 WEBSITE_CONTAINER="\$web"
 INDEX_FILE="index.html"

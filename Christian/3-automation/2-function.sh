@@ -31,7 +31,7 @@ cd ../2-azure-function/
 
 # 4. Funktion bereitstellen
 echo "Bereitstellen der Azure Function..."
-mv node_modules/ ../
+npm install
+npm prune --production
 func azure functionapp publish $FUNCTION_APP_NAME
-mv ../node_modules/ ./
 echo "Azure Function bereitgestellt."

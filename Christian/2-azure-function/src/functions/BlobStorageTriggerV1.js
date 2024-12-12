@@ -2,7 +2,7 @@ const { app } = require('@azure/functions');
 const sharp = require('sharp');
 const { BlobServiceClient } = require('@azure/storage-blob');
 
-app.storageBlob('storageBlobTrigger1', {
+app.storageBlob('BlobStorageTriggerV1', {
     path: 'images/upload/{name}',
     connection: 'imagewall_STORAGE',
     handler: async (blob, context) => {

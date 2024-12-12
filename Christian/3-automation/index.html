@@ -21,11 +21,12 @@
             <div id="images" class="flex flex-wrap gap-2"></div>
         </div>
         <script>
-            const storageUrl = "###URL###/images/upload";
-            const listUrl200 = "###URL###/images";
-            const listUrl800 = "###URL###/images";
-            const listUrl1024 = "###URL###/images";
-            const sasToken = "###SAS###";
+            const storageUrl = "https://imagewall.blob.core.windows.net/images/upload"; // Beispiel: https://<account>.blob.core.windows.net/<container>
+            const listUrl200 = "https://imagewall.blob.core.windows.net/images";
+            const listUrl800 = "https://imagewall.blob.core.windows.net/images";
+            const listUrl1024 = "https://imagewall.blob.core.windows.net/images";
+            const sasToken =
+                "sp=racwl&st=2024-12-12T09:41:45Z&se=2025-12-12T17:41:45Z&spr=https&sv=2022-11-02&sr=c&sig=wKDdtOXxjtwOUZI8d5M4JA%2BcS0xua9PYWaGGtp1eY9Y%3D";
 
             let update = false;
             let blobList = [];

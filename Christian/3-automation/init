@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#check if the resource group exists or is in .env
+if [ -f .env ]; then
+    source .env
+fi
+if [ -z $RESOURCE_GROUP ]; then
+    echo "RESOURCE_GROUP is not set in .env"
+    # get the RESOURCE_GROUP from the user
+    echo "Enter the resource group name:"
+    read RESOURCE_GROUP
+    #set to .env
+    echo "RESOURCE_GROUP=$RESOURCE_GROUP" >>.env
+fi
+if [ -z $STORAGE_ACCOUNT_NAME ]; then
+    echo "STORAGE_ACCOUNT_NAME is not set in .env"
+    # get the STORAGE_ACCOUNT_NAME from the user
+    echo "Enter the storage account name:"
+    read STORAGE_ACCOUNT_NAME
+    #set to .env
+    echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >>.env
+fi
+
+# call 1-storage.sh
+./1-storage.sh && ./2-function.sh
+
+if [ $? -eq 0 ]; then
+    echo "Automation complete"
+else
+    echo "Automation failed"
+fi

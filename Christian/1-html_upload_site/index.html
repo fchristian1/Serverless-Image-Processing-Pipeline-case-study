@@ -20,6 +20,10 @@
             <h3>View</h3>
             <div id="images" class="flex flex-wrap gap-2"></div>
         </div>
+        <div id="image-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+            <img id="modal-image" src="" alt="Großes Bild" class="max-w-full max-h-full" />
+            <button id="close-modal" class="absolute top-4 right-4 text-white text-2xl">×</button>
+        </div>
         <script>
             const storageUrl = "###URL###/images/upload";
             const listUrl200 = "###URL###/images";
@@ -55,21 +59,28 @@
             }
             async function addImageToContainer(blobName) {
                 const imagesContainer = document.getElementById("images");
-                const blobUrl = `${listUrl1024}/${blobName.replace("images-resize-200/", "images-resize-1024/")}?${sasToken}`;
-                const a = document.createElement("a");
-                a.href = blobUrl;
-                a.target = "_blank";
                 const img = document.createElement("img");
-                img.src = blobUrl;
                 img.alt = blobName;
+                img.src = `${listUrl200}/${blobName}?${sasToken}`;
                 img.width = 200;
-                a.appendChild(img);
-                imagesContainer.appendChild(a);
+                img.data;
+                img.setAttribute("data-large-src", `${listUrl1024}/${blobName.replace("images-resize-200/", "images-resize-1024/")}?${sasToken}`);
+                img.addEventListener("click", () => {
+                    const modalImage = document.getElementById("modal-image");
+                    modalImage.src = img.getAttribute("data-large-src");
+
+                    const modal = document.getElementById("image-modal");
+                    modal.classList.remove("hidden");
+                });
+                imagesContainer.appendChild(img);
                 update = false;
             }
 
             getBlops();
-
+            document.getElementById("image-modal").addEventListener("click", () => {
+                const modal = document.getElementById("image-modal");
+                modal.classList.add("hidden");
+            });
             document.getElementById("uploadButton").addEventListener("click", async () => {
                 const fileInput = document.getElementById("fileInput");
                 const file = fileInput.files[0];

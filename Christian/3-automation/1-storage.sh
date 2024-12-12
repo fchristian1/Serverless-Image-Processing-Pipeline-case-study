@@ -96,5 +96,5 @@ rm -f ../1-html_upload_site/$OUTPUT_INDEX_FILE
 echo "Erstellung abgeschlossen!"
 echo "Storage Account: $STORAGE_ACCOUNT_NAME"
 echo "Website verfügbar unter: $WEBSITE_URL"
-echo $WEBSITE_URL >>link.txt
+echo $WEBSITE_URL >link.txt
 echo "Container: $CONTAINER_NAME"

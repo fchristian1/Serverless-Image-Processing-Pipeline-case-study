@@ -1,7 +1,8 @@
 {
-  "name": "2-azure-function",
+  "name": "",
   "version": "1.0.0",
   "description": "",
+  "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
     "test": "echo \"No tests yet...\""
@@ -11,5 +12,7 @@
     "@azure/storage-blob": "^12.26.0",
     "sharp": "^0.33.5"
   },
-  "main": "src/{index.js,functions/*.js}"
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.x"
+  }
 }

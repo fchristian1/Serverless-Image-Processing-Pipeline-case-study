@@ -1,46 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azure Image Resizer</title>
-</head>
-<body>
-    <h1>Willkommen bei Azure Image Resizer</h1>
-    <form id="uploadForm">
-        <input type="file" id="fileInput" />
-        <button type="button" onclick="uploadFile()">Bild hochladen</button>
-    </form>
-    <div id="result"></div>
+<html>
+  <head>
+    <title>Bild Upload und Anzeige</title>
+  </head>
+  <body>
+    <h1>Bild Upload</h1>
+    <input type="file" id="imageInput" accept="image/*" />
+    <button onclick="uploadImage()">Hochladen</button>
+
+    <h2>Verkleinertes Bild:</h2>
+    <img id="resizedImage" style="max-width: 300px" />
 
     <script>
-        async function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
+      async function uploadImage() {
+        const fileInput = document.getElementById("imageInput");
+        const file = fileInput.files[0];
 
-            if (!file) {
-                alert("Bitte eine Datei auswählen!");
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("file", file);
-
-            try {
-                const response = await fetch("<UPLOAD-API-ENDPOINT>", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const result = await response.json();
-                document.getElementById("result").innerHTML = `
-                    <p>Bild erfolgreich hochgeladen. <a href="${result.resizedImageUrl}" target="_blank">Geändertes Bild herunterladen</a></p>
-                `;
-            } catch (err) {
-                console.error(err);
-                alert("Fehler beim Hochladen des Bildes.");
-            }
+        if (!file) {
+          alert("Bitte wählen Sie zuerst ein Bild aus.");
+          return;
         }
+
+        // SAS-Token für den Upload-Container
+        const sasUrl =
+          "https://casestudyy.blob.core.windows.net/input-images?sp=w&st=2024-12-12T10:59:13Z&se=2025-12-12T18:59:13Z&spr=https&sv=2022-11-02&sr=c&sig=j%2Ff8yMU1Bc6DCCTd2R4mWK7rFpp6p%2Bi9Xg9kFlh%2Bh80%3D";
+
+        // Bild hochladen
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch(sasUrl + "/" + file.name, {
+            method: "PUT",
+            body: file,
+            headers: {
+              "x-ms-blob-type": "BlockBlob",
+              "Content-Type": file.type,
+            },
+          });
+
+          if (response.ok) {
+            // Warten Sie einen Moment, bis die Function das Bild verarbeitet hat
+            setTimeout(showResizedImage, 3000, file.name);
+          }
+        } catch (error) {
+          console.error("Upload fehlgeschlagen:", error);
+          alert("Upload fehlgeschlagen.");
+        }
+      }
+
+      function showResizedImage(filename) {
+        // SAS-Token für den Thumbnail-Container
+        const thumbnailSasUrl =
+          "https://casestudyy.blob.core.windows.net/output-images?sp=r&st=2024-12-12T11:01:10Z&se=2025-12-12T19:01:10Z&spr=https&sv=2022-11-02&sr=c&sig=aHVuHtVuePjxQtX7NF9QwSsXCrP5a%2BK1ruiGezIU2s8%3D";
+        const img = document.getElementById("resizedImage");
+        img.src = thumbnailSasUrl + "/thumb-" + filename;
+      }
     </script>
-</body>
+  </body>
 </html>

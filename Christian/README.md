@@ -5,8 +5,8 @@
 
 - clone the repo
 - got to Christian/3-automation/
-- call ./init and give the resurcegruopname and then the name of the app name ... "imageswall"
-- on finish the http address is in link.txt on 3-automation
+- call ./init and give the resurce group name and then the name of the app name ... "imageswall"
+- on finish the http address is in link.txt in 3-automation folder
 
 ## init
 - init create a .env and save the resurcegruopname and the app name.

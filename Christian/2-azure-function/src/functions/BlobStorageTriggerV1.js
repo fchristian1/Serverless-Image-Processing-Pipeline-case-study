@@ -32,24 +32,33 @@ app.storageBlob('BlobStorageTriggerV1', {
             await containerClient1024.create();
         }
         context.log(`Try to resize image ${blobName}`);
-        try {
-            for (const size of sizes) {
-                const resizedImage = await sharp(blob)
-                    .resize({ width: size, height: size, fit: sharp.fit.inside, withoutEnlargement: true })
-                    .toBuffer();
-                const resizedBlobName = `images-resize-${size}/${blobName}`;
-                const containerClient = size === 200 ? containerClient200 : size === 800 ? containerClient800 : containerClient1024;
-                const blockBlobClient = containerClient.getBlockBlobClient(resizedBlobName);
-                await blockBlobClient.uploadData(resizedImage);
-                context.log(`Resizing image ${blobName} to ${size} pixels`);
+        let work = true;
+        let workCounter = 3;
+        while (work) {
+            try {
+                for (const size of sizes) {
+                    const resizedImage = await sharp(blob)
+                        .resize({ width: size, height: size, fit: sharp.fit.inside, withoutEnlargement: true })
+                        .toBuffer();
+                    const resizedBlobName = `images-resize-${size}/${blobName}`;
+                    const containerClient = size === 200 ? containerClient200 : size === 800 ? containerClient800 : containerClient1024;
+                    const blockBlobClient = containerClient.getBlockBlobClient(resizedBlobName);
+                    await blockBlobClient.uploadData(resizedImage);
+                    context.log(`Resizing image ${blobName} to ${size} pixels`);
+                }
+                //delete original image
+                const containerClient = blobServiceClient.getContainerClient('images/upload');
+                const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+                await blockBlobClient.delete();
+                context.log(`Image ${blobName} resized successfully`);
+                work = false;
+            } catch (error) {
+                context.log(`Error resizing image ${blobName}: ${error}`);
+                if (workCounter <= 0) {
+                    work = false;
+                }
             }
-            //delete original image
-            const containerClient = blobServiceClient.getContainerClient('images/upload');
-            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-            await blockBlobClient.delete();
-            context.log(`Image ${blobName} resized successfully`);
-        } catch (error) {
-            context.log(`Error resizing image ${blobName}: ${error}`);
+            workCounter--;
         }
     }
 });

@@ -8,7 +8,7 @@ LOCATION="germanywestcentral"
 CONTAINER_NAME="images"
 WEBSITE_CONTAINER="\$web"
 INDEX_FILE="index.html"
-OUTPUT_INDEX_FILE="updated_index.html"
+OUTPUT_INDEX_FILE="index_live.html"
 
 # Storage Account erstellen
 echo "Erstelle Storage Account $STORAGE_ACCOUNT_NAME ..."
@@ -91,7 +91,7 @@ WEBSITE_URL=$(az storage account show \
     --resource-group $RESOURCE_GROUP \
     --query "primaryEndpoints.web" -o tsv)
 
-rm -f ../1-html_upload_site/$OUTPUT_INDEX_FILE
+#rm -f ../1-html_upload_site/$OUTPUT_INDEX_FILE
 
 echo "Erstellung abgeschlossen!"
 echo "Storage Account: $STORAGE_ACCOUNT_NAME"

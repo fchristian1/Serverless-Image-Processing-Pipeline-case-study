@@ -33,5 +33,5 @@ cd ../2-azure-function/
 echo "Bereitstellen der Azure Function..."
 npm install
 npm prune --production
-func azure functionapp publish $FUNCTION_APP_NAME
+func azure functionapp publish $FUNCTION_APP_NAME --javascript
 echo "Azure Function bereitgestellt."

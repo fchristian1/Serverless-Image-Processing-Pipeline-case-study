@@ -27,6 +27,7 @@ Pros:
 Cons:
   - with larger images or many images to download, the costs can be high, if you limit this, the function may be more complicated to maintain and understand
   - its a simple service, wenn you provide more functions to this system its a rewrite to an microservice or iaas(vm) better.
+  - the function with multipart upload request is complicatet to handel all different types of upload methods.
 
 Tasks:
   - create a Azure Function with HTTP Trigger in a new Storage Container Account

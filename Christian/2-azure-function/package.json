@@ -10,6 +10,7 @@
   "dependencies": {
     "@azure/functions": "^4.0.0",
     "@azure/storage-blob": "^12.26.0",
+    "parse-multipart": "^1.0.4",
     "sharp": "^0.33.5"
   },
   "devDependencies": {

@@ -1,0 +1,6 @@
+✅create a reszize function on trigger blob storage
+✅create a website to upload files to blob storage
+✅automate the deployment of the function app
+
+create a http trigger function to resize images and download them
+    - here is the problem with the multipart upload data and the function app. to create correct headers and body is not trival and it is complicate to handel the different upload modes.

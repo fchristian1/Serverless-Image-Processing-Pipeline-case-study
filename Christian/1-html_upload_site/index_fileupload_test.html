@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <form action="http://localhost:7071/api/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="ref" id="ref" value="1234" />
+            <input type="file" name="file" multiple />
+            <input type="submit" value="Upload" />
+        </form>
+        <script>
+            //multipart/form-data
+            document.querySelector("form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                let ref = form.querySelector("#ref").value;
+                let url = "http://localhost:7071/api/upload/" + ref;
+                const formData = new FormData(form);
+                const response = await fetch(url, {
+                    method: form.method,
+                    body: formData,
+                });
+                const data = await response.json();
+                console.log(data);
+            });
+        </script>
+    </body>
+</html>
